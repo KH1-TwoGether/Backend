@@ -17,4 +17,4 @@ app.use("/users", usersRoute);
 app.all('/', (req, res) => response(req, res, 200, 'Welcome to the backend of TwoGether! :)'));
 app.all('*', (req, res) => response(req, res, 404));
 
-app.listen(8080, () => console.log("Listening on port 8080"));
+app.listen(process.env.PORT || 8080, () => console.log("Listening on port 8080"));
