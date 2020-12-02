@@ -1,8 +1,17 @@
-type PostData = {
+type ID = string;
+type ImageUrl = string;
+type UnixTime = number;
+
+type PostAuthor = {
+    name: string;
     id?: string;
-    author: string;
-    authorId: string;
-    image?: string;
-    content: string;
-    date: string;
+};
+type PostContent = string;
+
+type PostData = {
+    id?: ID;
+    author?: PostAuthor;
+    image?: ImageUrl;
+    content?: PostContent;
+    date?: UnixTime;
 };
