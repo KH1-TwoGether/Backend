@@ -23,4 +23,8 @@ router.post("/register", async (req, res) => {
     }
 });
 
+router.post("/login", (req, res) => {
+    res.status(501).send();
+});
+
 export default router;
