@@ -1,4 +1,5 @@
 import * as express from "express";
+import * as jwt from "express-jwt";
 import * as cors from "cors";
 
 import usersRoute from './routes/users';
@@ -10,13 +11,26 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use(jwt({
+    secret: process.env.TOKEN_SECRET || "",
+    algorithms: ["HS256"]
+}).unless({
+    path: [
+        "/users/register",
+        "/users/login"
+    ]
+}));
+app.use((err: any, req: any, res: any, next: any) => {
+    if (err.name === 'UnauthorizedError') {
+        res.status(401).json({error: "Access denied"});
+        return;
+    }
+    next(err);
+});
+
 // Apply given routers
 app.use("/users", usersRoute);
 app.use("/groups", groupsRoute);
 app.use("/posts", postsRoute);
-
-// Catch all other request to not run into an error
-app.all('/', (req, res) => res.status(200).send('Welcome to the backend of TwoGether! :)'));
-app.all('*', (req, res) => res.status(404).send());
 
 app.listen(process.env.PORT || 8080, () => console.log("Backend running"));

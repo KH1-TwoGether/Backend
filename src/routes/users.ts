@@ -1,30 +1,57 @@
 import * as express from "express";
-import ModelHandler from "../classes/ModelHandler";
-import User from "../models/user";
+import * as jwt from "jsonwebtoken";
+
+import DataHandler from "../classes/DataHandler";
+import {getUnixTime} from "../misc";
+import {loginValidation, registerValidation} from "../validation";
 
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
-    const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        date: (new Date).getTime()
+    let user: any;
+    try {
+        user = await registerValidation(req.body);
+    } catch ({message}) {
+        res.status(400).json({error: message});
+        return;
+    }
+
+    const handler = new DataHandler("user", {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        date: getUnixTime()
     });
-    const { error } = await user.validate();
-    if(error) {
-        const errors: string[] = [];
-        error.details.forEach((info: any) => errors.push(info.message));
-        res.status(400).json({errors});
-    } else {
-        const handler = new ModelHandler("user", user);
+    try {
         await handler.save();
         res.status(201).send();
+    } catch (e) {
+        res.status(500).send();
     }
 });
 
-router.post("/login", (req, res) => {
-    res.status(501).send();
+router.post("/login", async (req, res) => {
+    let user: any;
+    try {
+        user = await loginValidation(req.body);
+    } catch (e) {
+        res.status(400).json({error: "Invalid user or password"});
+        return;
+    }
+
+    const handler = new DataHandler("user", {}, user.user);
+    try {
+        await handler.load();
+    } catch (e) {
+        res.status(500).send();
+        return;
+    }
+
+    const token = jwt.sign({
+        id: handler.id
+    }, process.env.TOKEN_SECRET || "");
+
+    res.header("Token", token).status(200).json({token});
 });
 
 export default router;

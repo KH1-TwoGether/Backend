@@ -1,11 +1,9 @@
 import * as express from "express";
-//import DB  from "../classes/DB";
-import { response } from "../misc";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    res.status(200).send();
+    res.status(200).send("Hello world!");
 });
 
 router.get("*", (req, res) => {
@@ -14,15 +12,15 @@ router.get("*", (req, res) => {
         response(req, res, 200, filterDoc(docs[0]));
     }).catch(() => response(req, res, 404));
      */
-    response(req, res, 200);
+    res.status(501).send();
 });
 
 router.put("*", (req, res) => {
-    response(req, res, 200);
+    res.status(501).send();
 });
 
 router.delete("*", (req, res) => {
-    response(req, res, 200);
+    res.status(501).send();
 });
 
 export default router;
