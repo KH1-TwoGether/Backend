@@ -14,9 +14,3 @@ DB.info()
     .catch((e: any) => console.error("DB-Error", e));
 
 export default DB;
-
-export function filterDoc(doc: any) {
-    doc._id && delete doc._id;
-    doc._rev && delete doc._rev;
-    return doc;
-}

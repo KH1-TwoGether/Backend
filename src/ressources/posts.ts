@@ -1,15 +1,11 @@
 import * as express from "express";
-import DB, { filterDoc } from "../classes/DB";
+//import DB  from "../classes/DB";
 import { response } from "../misc";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    DB.query("").then(({rows}) => {
-        let data: any[] = [];
-        rows.forEach((doc: any) => data.push(filterDoc(doc)));
-        response(req, res, 200, data);
-    }).catch(() => response(req, res, 404));
+    res.status(200).send();
 });
 
 router.get("*", (req, res) => {

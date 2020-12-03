@@ -8,6 +8,7 @@ import postsRoute from './ressources/posts';
 
 // Create express instance and apply cors-restriction
 const app = express();
+app.use(express.json());
 app.use(cors());
 
 // Apply given routers

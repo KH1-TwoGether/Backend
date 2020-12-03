@@ -1,4 +1,9 @@
-import {Request, Response} from "express";
+import { Request, Response } from "express";
+import * as uuid from "uuid";
+
+export function getTypeNamespace(type: ModelType) {
+    return uuid.v5(type, uuid.NIL);
+}
 
 let states = {
     200: {
