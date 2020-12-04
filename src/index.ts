@@ -37,7 +37,7 @@ app.use(async (req: any, res, next) => {
 
     req.user = {
         id: req.user.id,
-        ...handler.filtered
+        ...handler.data
     };
 
     next();

@@ -44,6 +44,30 @@ export const loginValidation = async (data: any) => {
     });
 }
 
+export const editValidation = async (data: any) => {
+    const schema = Joi.object({
+        name: Joi.string().alphanum().min(3).max(30).external(async name => {
+            if(!name) return;
+            const {rows} = await DB.query("users/names", {key: name, reduce: true});
+            if (rows.length && rows[0].value === 1) throw new Error("Already exists");
+        }, "Check if the name is already in use"),
+        email: Joi.string().email({minDomainSegments: 2}).external(async email => {
+            if(!email) return;
+            const {rows} = await DB.query("users/emails", {key: email, reduce: true});
+            if (rows.length && rows[0].value === 1) throw new Error("Already exists");
+        }, "Check if the email is already in use"),
+        password: Joi.string().min(6).external(async password => {
+            if(!password) return;
+            return await bcrypt.hash(password, 10);
+        })
+    });
+    return await schema.validateAsync({
+        name: data.name,
+        email: data.email,
+        password: data.password
+    });
+}
+
 export const postValidation = async (data: any) => {
     const schema = Joi.object({
         content: Joi.string().max(120).required()

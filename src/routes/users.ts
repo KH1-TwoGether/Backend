@@ -3,7 +3,7 @@ import * as jwt from "jsonwebtoken";
 
 import DataHandler from "../classes/DataHandler";
 import {getUnixTime} from "../misc";
-import {loginValidation, registerValidation} from "../validation";
+import {editValidation, loginValidation, registerValidation} from "../validation";
 import DB from "../classes/DB";
 
 const router = Router();
@@ -58,8 +58,41 @@ router.post("/login", async (req, res) => {
     res.header("Token", token).status(200).json({token});
 });
 
-router.put("/", async (req, res) => {
-    res.status(501).send();
+router.put("/", async (req: any, res) => {
+    const handler = new DataHandler("user", {}, req.user.id);
+    try {
+        await handler.load();
+    } catch (e) {
+        res.status(500).send();
+        return;
+    }
+
+    let data: any;
+    try {
+        data = await editValidation(req.body);
+    } catch ({message}) {
+        res.status(400).json({error: message});
+        return;
+    }
+
+    let update = false;
+    Object.keys(data).forEach(key => {
+        if(!data[key]) return;
+        handler.data[key] = data[key];
+        update = true;
+    });
+
+    if(!update) {
+        res.status(409).send();
+        return;
+    }
+
+    try {
+        await handler.save();
+        res.status(200).send();
+    } catch (e) {
+        res.status(500).send();
+    }
 });
 
 router.delete("/", async (req: any, res) => {
