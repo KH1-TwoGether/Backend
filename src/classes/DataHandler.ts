@@ -1,4 +1,4 @@
-import DB from "./DB";
+import DB, {filterDoc} from "./DB";
 import {nanoid} from "nanoid";
 
 class DataHandler {
@@ -24,6 +24,10 @@ class DataHandler {
             type: this.type,
             ...this.data
         });
+    }
+
+    public get filtered() {
+        return filterDoc(this.data);
     }
 
 }

@@ -43,3 +43,12 @@ export const loginValidation = async (data: any) => {
         password: data.password
     });
 }
+
+export const postValidation = async (data: any) => {
+    const schema = Joi.object({
+        content: Joi.string().max(120).required()
+    });
+    return await schema.validateAsync({
+        content: data.content
+    });
+}
