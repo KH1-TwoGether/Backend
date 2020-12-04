@@ -1,11 +1,12 @@
-import * as express from "express";
+import {Router} from "express";
 import * as jwt from "jsonwebtoken";
 
 import DataHandler from "../classes/DataHandler";
 import {getUnixTime} from "../misc";
 import {loginValidation, registerValidation} from "../validation";
+import DB, {filterDoc} from "../classes/DB";
 
-const router = express.Router();
+const router = Router();
 
 router.post("/register", async (req, res) => {
     let user: any;
@@ -52,6 +53,13 @@ router.post("/login", async (req, res) => {
     }, process.env.TOKEN_SECRET || "");
 
     res.header("Token", token).status(200).json({token});
+});
+
+router.get("/", async (req: any, res) => {
+    const data = await DB.get(req.user.id);
+    const filtered = filterDoc(data);
+    if(filtered.password) delete filtered.password;
+    res.status(200).json(filtered);
 });
 
 export default router;
