@@ -8,15 +8,24 @@ import {getUnixTime} from "../misc";
 const router = Router();
 
 router.get("/", async (req, res) => {
+    let list: any[];
     try {
         const docs = await DB.query("posts/all", {
             reduce: false,
             descending: true
         });
-        res.status(200).json(docs);
+        list = docs.rows;
     } catch (e) {
         res.status(500).send();
+        return;
     }
+
+    const ret: any[] = [];
+    list.forEach(post => {
+        const handler = new DataHandler("post", post.value);
+        ret.push(handler.data);
+    })
+    res.status(200).json(ret);
 });
 
 router.post("/", async (req: any, res) => {

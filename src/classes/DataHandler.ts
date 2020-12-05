@@ -9,21 +9,20 @@ class DataHandler {
     public data: any;
 
     constructor(type: ModelType, data: any, id?: ID) {
+        if (!id && data._id) id = data._id;
         if (!id) id = Math.floor(Math.random() * 9) + nanoid(31);
         this.id = id;
+        if(data._rev) this.rev = data._rev;
         this.type = type;
         this.data = data;
+        this.filter();
     }
 
     public async load(): Promise<void> {
         const data: any = await DB.get(this.id);
-        if(data._rev) this.rev = data._rev;
-
-        if(data._id) delete data._id;
-        if(data._rev) delete data._rev;
-        if(data.type) delete data.type;
-
         this.data = data;
+        if(data._rev) this.rev = data._rev;
+        this.filter();
     }
 
     public async save(): Promise<void> {
@@ -33,6 +32,14 @@ class DataHandler {
             type: this.type,
             ...this.data
         });
+    }
+
+    private filter(): void {
+        const data = this.data;
+        if(data._id) delete data._id;
+        if(data._rev) delete data._rev;
+        if(data.type) delete data.type;
+        this.data = data;
     }
 
 }
