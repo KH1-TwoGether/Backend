@@ -3,6 +3,6 @@ services:
   twogether:
     build: .
     env_file:
-      - .env.prod
+      - '.env.prod'
     ports: 
-      - "18010:8080"
+      - '18010:8080'
