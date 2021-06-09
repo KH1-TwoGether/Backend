@@ -5,9 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "./node_modules/.bin/nodemon -w src -e ts -x ./node_modules/.bin/ts-node -d 3 -r dotenv/config src/index.ts dotenv_config_path=./.env.dev",
+    "dev:win": ".\\node_modules\\.bin\\nodemon -w src -e ts -x .\\node_modules\\.bin\\ts-node -d 3 -r dotenv\\config src\\index.ts dotenv_config_path=.\\.env.dev",
     "start": "node dist/index.js",
     "build": "rm -rf dist && ./node_modules/.bin/tsc",
-    "build:docker": "docker-compose up --force-recreate --build -d && docker image prune -f"
+    "build:docker": "sudo docker-compose up --force-recreate --build -d && sudo docker image prune -f"
   },
   "repository": {
     "type": "git",

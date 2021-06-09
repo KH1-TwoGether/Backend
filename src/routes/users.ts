@@ -8,12 +8,14 @@ import DB from "../classes/DB";
 
 const router = Router();
 
-router.get("/", async (req: any, res) => {
+// Get the stored userdata
+router.get("/", async (req: any, res: any) => {
     delete req.user.password;
     res.status(200).json(req.user);
 });
 
-router.post("/register", async (req, res) => {
+// Register new user
+router.post("/register", async (req: any, res: any) => {
     let user: any;
     try {
         user = await registerValidation(req.body);
@@ -36,7 +38,8 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post("/login", async (req, res) => {
+// Login (generate token) for user
+router.post("/login", async (req: any, res: any) => {
     let user: any;
     try {
         user = await loginValidation(req.body);
@@ -58,7 +61,8 @@ router.post("/login", async (req, res) => {
     res.header("Token", token).status(200).json({token});
 });
 
-router.put("/", async (req: any, res) => {
+// Edit user
+router.put("/", async (req: any, res: any) => {
     const handler = new DataHandler("user", {}, req.user.id);
     try {
         await handler.load();
@@ -95,7 +99,8 @@ router.put("/", async (req: any, res) => {
     }
 });
 
-router.delete("/", async (req: any, res) => {
+// Delete user
+router.delete("/", async (req: any, res: any) => {
     try {
         const doc = await DB.get(req.user.id);
         await DB.remove(doc);
