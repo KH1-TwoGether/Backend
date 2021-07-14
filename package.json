@@ -4,7 +4,7 @@
   "description": "Backend for the TwoGether app",
   "main": "dist/index.js",
   "scripts": {
-    "test": "yarn build"
+    "test": "yarn build",
     "dev": "./node_modules/.bin/nodemon -w src -e ts -x ./node_modules/.bin/ts-node -d 3 -r dotenv/config src/index.ts dotenv_config_path=./.env.dev",
     "dev:win": ".\\node_modules\\.bin\\nodemon -w src -e ts -x .\\node_modules\\.bin\\ts-node -d 3 -r dotenv\\config src\\index.ts dotenv_config_path=.\\.env.dev",
     "start": "node dist/index.js",
