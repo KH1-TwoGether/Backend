@@ -1,0 +1,43 @@
+# This is a workflow to build and push a new docker image
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on completion of the "CI" workflow
+  workflow_run:
+    workflows: [ "CI" ]
+    types:
+      - completed
+
+  # Allows to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job
+  push:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE, so this job can access it
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Create app build
+        run: |
+          yarn install --frozen-lockfile
+          yarn build
+
+      - name: Create docker image
+        run: |
+          echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
+          docker build . --file Dockerfile --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
+          docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:$GITHUB_SHA
