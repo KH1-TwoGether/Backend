@@ -3,8 +3,9 @@ FROM node:14-alpine
 WORKDIR /usr/app
 
 COPY . .
-RUN npm ci
-RUN npm run build
+
+RUN yarn install --frozen-lockfile
+RUN yarn build
 
 EXPOSE 8080
 
