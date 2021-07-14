@@ -1,6 +1,6 @@
 # This is a workflow to build and push a new docker image
 
-name: CI
+name: CD
 
 # Controls when the workflow will run
 on:
