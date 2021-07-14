@@ -31,11 +31,6 @@ jobs:
         with:
           node-version: 14
 
-      - name: Create app build
-        run: |
-          yarn install --frozen-lockfile
-          yarn build
-
       - name: Create docker image
         run: |
           echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
